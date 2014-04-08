@@ -59,15 +59,21 @@ Canvas & operator <<(Canvas & cancan, Djuping1 & dj)
 class Djuping2
 {
 public:
-		Djuping2(string t)
+	Djuping2(string t)
 	{
-		unique_ptr<string> _utp(new string(t));
+		_utp = unique_ptr<string>(new string(t));
 		_t = t;
 	};
 
+	Djuping2 (const Djuping2 & orginal)
+	{ 
+		_utp = unique_ptr<string>(new string(orginal._t));
+		_t = *_utp;
+	}
+
 	Djuping2 & operator=(Djuping2 & d)
 	{
-		unique_ptr<string> _utp(new string(d._t));
+		_utp = unique_ptr<string>(new string(d._t));
 		_t = *_utp;
 		return *this;
 	}
@@ -86,6 +92,7 @@ public:
 	friend Canvas & operator <<(Canvas & cancan, Djuping2 & dj);
 
 private:
+	unique_ptr<string> _utp;
 	string _t;
 	Canvas * _cv;
 };
@@ -107,7 +114,7 @@ void DisplayProgram::mymain(DisplayWindow window, Canvas cv,InputDevice keyboard
 	while (looping(keyboard,window,cv))
 	{
 		{
-			//Djuping2 minDjuping3("yes");  //1 Vad blir fel? Hur löser man det? Finns ingen konstruktor, samt att objektet skapas för varje loop.
+			//Djuping2 minDjuping3("yes");  //1 Vad blir fel? Hur löser man det? Finns ingen konstruktor, samt att objektet skapas (lokalt) för varje loop.
 			minDjuping=minDjuping3;	   //3 Vad blir fel? Hur löser man det? Finns ingen operator för Djuping=Djuping.
 		}					   //3 Vad blir fel? Hur löser man det?
 		cv<<minDjuping;			   //2 Hur löser man detta? Skapar en funktion för << operatorn.
