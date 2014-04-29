@@ -1,122 +1,117 @@
 #include "displayprogram.h"
+//class Djuping1
+//{
+//public:
+//	Djuping1(string t)
+//	{
+//		_tp = new string(t);
+//		
+//	};
+//
+//	~Djuping1()
+//	{
+//		delete _tp;
+//	}
+//
+//	Djuping1 & operator=(Djuping1 & d)
+//	{
+//		delete _tp;
+//		_tp = new string(*d._tp);
+//		
+//		return *this;
+//	}
+//
+//	Djuping1(const Djuping1 & orginal)
+//	{
+//		_tp = new string(*orginal._tp);
+//	
+//	}
+//
+//	Djuping1 & operator+(Djuping1 h)
+//	{
+//		*_tp += *h._tp;
+//		return *this;
+//	};
+//
+//	
+//	friend Canvas & operator <<(Canvas & cancan, Djuping1 & dj);
+//
+//private:
+//	string * _tp;
+//	
+//};
+
+
 class Djuping1
 {
-public: 
+public:
 	Djuping1(string t)
 	{
-		_tp = new string(t);
-		_t = t;
+		_utp = unique_ptr<string>(new string(t));
+		
 	};
 
-	~Djuping1()
+	Djuping1(const Djuping1 & orginal)
 	{
-		delete _tp;
+		_utp = unique_ptr<string>(new string(*orginal._utp));
+		
 	}
 
 	Djuping1 & operator=(Djuping1 & d)
 	{
-		delete _tp;
-		_tp = new string(*d._tp);
-		_t = *_tp;
+		_utp = unique_ptr<string>(new string(*d._utp));
+		
 		return *this;
-	}
-
-	Djuping1 (const Djuping1 & orginal)
-	{ 
-		_tp = new string(*orginal._tp);
-		_t = *_tp;
 	}
 
 	Djuping1 & operator+(Djuping1 h)
 	{
-		_t = _t + h.getText();
+		*_utp += *h._utp;
+		return *this;
+	};
 
-		return Djuping1(_t);
-	};
 	
-	string getText()
-	{
-		return _t;
-	};
 
 	friend Canvas & operator <<(Canvas & cancan, Djuping1 & dj);
 
 private:
-	string * _tp;
-	string _t;
-	Canvas * _cv;
+	unique_ptr<string> _utp;
+	
 };
-
+//Canvas & operator <<(Canvas & cancan, Djuping1 & dj)
+//{
+//	Font font(cancan, "Arial", 24);
+//
+//	font.draw_text(cancan, 250, 250, *dj._tp, Colorf(0, 0, 0, 1.0));
+//
+//	return cancan;
+//}
 Canvas & operator <<(Canvas & cancan, Djuping1 & dj)
 {
 	Font font(cancan, "Arial", 24);
 
-	font.draw_text(cancan, 250, 250, dj.getText(), Colorf(0,0,0,1.0));
+	font.draw_text(cancan, 250, 250, *dj._utp, Colorf(0, 0, 0, 1.0));
 
 	return cancan;
 }
 
-class Djuping2
+void DisplayProgram::mymain(DisplayWindow window, Canvas cv, InputDevice keyboard, InputDevice mouse, Font font)
 {
-public:
-	Djuping2(string t)
-	{
-		_utp = unique_ptr<string>(new string(t));
-		_t = t;
-	};
-
-	Djuping2 (const Djuping2 & orginal)
-	{ 
-		_utp = unique_ptr<string>(new string(orginal._t));
-		_t = *_utp;
-	}
-
-	Djuping2 & operator=(Djuping2 & d)
-	{
-		_utp = unique_ptr<string>(new string(d._t));
-		_t = *_utp;
-		return *this;
-	}
-
-	Djuping2 & operator+(Djuping2 h)
-	{
-		string text = _t + h.getText();
-		return Djuping2(text);
-	};
-
-	string getText()
-	{
-		return _t;
-	};
-
-	friend Canvas & operator <<(Canvas & cancan, Djuping2 & dj);
-
-private:
-	unique_ptr<string> _utp;
-	string _t;
-	Canvas * _cv;
-};
-
-Canvas & operator <<(Canvas & cancan, Djuping2 & dj)
-{
-	Font font(cancan, "Arial", 24);
-
-	font.draw_text(cancan, 250, 250, dj.getText(), Colorf(0,0,0,1.0));
-
-	return cancan;
-}
-
-void DisplayProgram::mymain(DisplayWindow window, Canvas cv,InputDevice keyboard, InputDevice mouse,Font font)
-{
-	Djuping2 minDjuping("Hej du");
-	minDjuping+Djuping2("dudu");    //2 Vad blir fel? Hur löser man det (två steg). Finns ingen operator för Djuping1+Djuping1
-	Djuping2 minDjuping3("yes");
-	while (looping(keyboard,window,cv))
+	Djuping1 minDjuping("Hej du");
+	minDjuping + Djuping1("dudu");    //2 Vad blir fel? Hur löser man det (två steg)  
+	//Finns ingen operator
+	while (looping(keyboard, window, cv))
 	{
 		{
-			//Djuping2 minDjuping3("yes");  //1 Vad blir fel? Hur löser man det? Finns ingen konstruktor, samt att objektet skapas (lokalt) för varje loop.
-			minDjuping=minDjuping3;	   //3 Vad blir fel? Hur löser man det? Finns ingen operator för Djuping=Djuping.
-		}					   //3 Vad blir fel? Hur löser man det?
-		cv<<minDjuping;			   //2 Hur löser man detta? Skapar en funktion för << operatorn.
+			Djuping1 minDjuping3("yes");  //1 Vad blir fel? Hur löser man det?
+			//Finns ingen konstruktor och objektet skapas lokalt för varje loop
+
+			minDjuping = minDjuping3;	   //3 Vad blir fel? Hur löser man det
+			//Finns ingen operator för Djuping1=Djuping1
+		}					   
+		cv<<minDjuping;			   //2 Hur löser man detta	?
+		//Skapa operator mellan canvas och Djuping1
+		
 	}
-}
+
+} 
